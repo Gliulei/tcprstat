@@ -93,6 +93,7 @@ process_ip(pcap_t *dev, const struct ip *ip, struct timeval tv) {
     char src[16], dst[16], *addr;
     int incoming;
     unsigned len;
+    char *data = NULL;
     
     addr = inet_ntoa(ip->ip_src);
     strncpy(src, addr, 15);
@@ -133,18 +134,20 @@ process_ip(pcap_t *dev, const struct ip *ip, struct timeval tv) {
         if (datalen == 0)
             break;
 
-        if (incoming) { //进入系统的时间tv
+        data = (char*) ((unsigned char *) tcp + tcp->doff * 4);
+
+        if (incoming) { //锟斤拷锟斤拷系统锟斤拷时锟斤拷tv
             lport = dport;
             rport = sport;
             
-            inbound(tv, ip->ip_dst, ip->ip_src, lport, rport);
+            inbound(tv, data, ip->ip_dst, ip->ip_src, lport, rport);
             
         }
-        else {//出系统的时间tv记录到hash中
+        else {//锟斤拷系统锟斤拷时锟斤拷tv锟斤拷录锟斤拷hash锟斤拷
             lport = sport;
             rport = dport;
             
-            outbound(tv, ip->ip_src, ip->ip_dst, lport, rport);
+            outbound(tv, data, ip->ip_src, ip->ip_dst, src, dst, lport, rport);
             
         }
 

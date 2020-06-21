@@ -44,8 +44,8 @@
 
 struct hash *sessions;
 
-unsigned long *stats; //¸ÃÊý×éÀïÃæ¼ÇÂ¼ÁË³öÏµÍ³ºÍ½øÏµÍ³µÄÊ±¼ä²î
-unsigned statscount,  //¼ÆËãÊ±¼äµÄÊ±ºòµÄ×Ü°üÊý
+unsigned long *stats; //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½Ë³ï¿½ÏµÍ³ï¿½Í½ï¿½ÏµÍ³ï¿½ï¿½Ê±ï¿½ï¿½ï¿½
+unsigned statscount,  //ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½Ü°ï¿½ï¿½ï¿½
 statssz;
 
 pthread_mutex_t sessions_mutex = PTHREAD_MUTEX_INITIALIZER,
@@ -99,13 +99,83 @@ free_stats(void) {
     
 }
 
+void gen_cmd(char *src, const char *separator, char *dest) {
+    char *pNext;
+    //int count = 0;
+    if (src == NULL || strlen(src) == 0)
+    {
+        return;
+    }
+
+    if (separator == NULL || strlen(separator) == 0)
+    {
+        return; 
+    }
+
+    pNext = strtok(src, separator);
+    while(pNext != NULL) 
+    {
+        if(NULL == strstr(pNext, "*") && NULL == strstr(pNext, "$"))
+        {
+            //*dest++ = pNext;
+           // ++count;
+           strcat(dest, pNext);
+           strcat(dest, " ");
+        }
+        pNext = strtok(NULL, separator);  
+        
+    }  
+} 
+
+int time2Str(time_t timep, char* str, size_t len)
+{
+    struct tm *tmp_time = localtime(&timep);
+    strftime(str, len, "%Y-%m-%d %H:%M:%S", tmp_time);
+    return 0;
+}
+
+char* trim_left(char *str) {
+  int len = strlen(str);
+  char *cur = str;
+
+  while (*cur && isspace(*cur))
+  {
+    ++cur;
+    --len;
+  }
+
+  if (str != cur) memmove(str, cur, len + 1);
+
+  return str;
+}
+
+void trim_right(char *str) {
+  int len = strlen(str);
+  
+  char *cur = str + len - 1;
+
+  while (cur != str && isspace(*cur)) --cur;
+  cur[isspace(*cur) ? 0 : 1] = '\0';
+  
+  //return str;
+}
+
+char* trim(char *str) {
+  trim_right(str);
+  trim_left(str);
+  return str;
+}
+
 int
-inbound(struct timeval tv, struct in_addr laddr, struct in_addr raddr,
+inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr raddr,
         uint16_t lport, uint16_t rport)
 {
     lock_sessions();
+    char buf[50496]={'\0'};
+    gen_cmd(data, "\r\n", buf);
+    trim_right(buf);
     
-    hash_set(sessions, laddr.s_addr, raddr.s_addr, lport, rport, tv);
+    hash_set(sessions, laddr.s_addr, raddr.s_addr, lport, rport, tv, buf);
     
     unlock_sessions();
     
@@ -113,23 +183,24 @@ inbound(struct timeval tv, struct in_addr laddr, struct in_addr raddr,
     
 }
 
-//Ê±ÑÓÍ³¼Æ¹Ø¼üº¯Êý¼û¼ûget_flush_stats  outbound
+//Ê±ï¿½ï¿½Í³ï¿½Æ¹Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½get_flush_stats  outbound
 
 int
-outbound(struct timeval tv, struct in_addr laddr, struct in_addr raddr,
+outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr raddr,char* l_ip, char* r_ip,
          uint16_t lport, uint16_t rport)
 {
     struct timeval start;
     unsigned long newstat;
     char buf[1024];
     int n = 0;
+    char* key = NULL;
     
     lock_sessions();
     
-    if (hash_get_rem(sessions, laddr.s_addr, raddr.s_addr, lport, rport, &start))
+    if (hash_get_rem(sessions, laddr.s_addr, raddr.s_addr, lport, rport, &start, &key))
     {
         newstat = (tv.tv_sec - start.tv_sec) * 1000000 +
-                    (tv.tv_usec - start.tv_usec); //Õâ¾ÍÊÇ³öÏµÍ³µÄÊ±¼ä-½øÏµÍ³µÄÊ±¼ä´Á£¬Ò²¾ÍÊÇ½øÈë±¾ÏµÍ³ºÍ³ö±¾ÏµÍ³µÄÊ±¼ä²î
+                    (tv.tv_usec - start.tv_usec); //ï¿½ï¿½ï¿½ï¿½Ç³ï¿½ÏµÍ³ï¿½ï¿½Ê±ï¿½ï¿½-ï¿½ï¿½ÏµÍ³ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½Ç½ï¿½ï¿½ë±¾ÏµÍ³ï¿½Í³ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½Ê±ï¿½ï¿½ï¿½
                     
         unlock_sessions();
 
@@ -143,11 +214,12 @@ outbound(struct timeval tv, struct in_addr laddr, struct in_addr raddr,
             
         }
 
-        if(newstat > g_delay_time && g_log_fd > 0) {
+        zlog_info(g_log_fd, "cmd=%s, res_len=%ld, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, data, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
+        /*if(newstat > g_delay_time && g_log_fd > 0) {
             n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     delay_time:%ld\r\n", start.tv_sec, start.tv_usec, newstat);
             if(n > 0)
                 write(g_log_fd, buf, (size_t)n);
-        }
+        }*/
         stats[statscount ++] = newstat; //
         
         unlock_stats();
@@ -215,7 +287,7 @@ clean_thread(void *arg) {
 }
 
 /*** Results ***/
-struct stats_results { //Ò»¶ÎÊ±¼äÄÚµÄÍ³¼ÆÐÅÏ¢´æÈëµ½¸Ã½á¹¹£¬¼ûget_flush_stats  outbound
+struct stats_results { //Ò»ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Úµï¿½Í³ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ëµ½ï¿½Ã½á¹¹ï¿½ï¿½ï¿½ï¿½get_flush_stats  outbound
     unsigned long *stats;
     unsigned statscount, statssz;
     
@@ -227,7 +299,7 @@ static void sort_results(struct stats_results *results);
 int compare_stats(const void *, const void *);
 
 struct stats_results *
-get_flush_stats(void) {  //Ê±ÑÓÍ³¼Æ¹Ø¼üº¯Êý¼û¼ûget_flush_stats  outbound
+get_flush_stats(void) {  //Ê±ï¿½ï¿½Í³ï¿½Æ¹Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½get_flush_stats  outbound
     struct stats_results *ret;
     
     ret = malloc(sizeof(struct stats_results));
@@ -238,12 +310,12 @@ get_flush_stats(void) {  //Ê±ÑÓÍ³¼Æ¹Ø¼üº¯Êý¼û¼ûget_flush_stats  outbound
     lock_stats();
     
     ret->stats = stats;
-    ret->statscount = statscount; //ÓÉret->statscountÖ¸ÏòÍ³¼ÆºÃµÄ¸÷ÖÖÐÅÏ¢  Õâ¶ÎÊ±¼ä¶ÎÄÚÒÑ¾­Í³¼ÆºÃµÄÊ±ÑÓ·ÅÔÚÁË¸ÃÊý×éÀï£¬ÔÚ¸Ãº¯Êýwait½øÐÐÍ³¼Æ
+    ret->statscount = statscount; //ï¿½ï¿½ret->statscountÖ¸ï¿½ï¿½Í³ï¿½ÆºÃµÄ¸ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢  ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½Í³ï¿½ÆºÃµï¿½Ê±ï¿½Ó·ï¿½ï¿½ï¿½ï¿½Ë¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï£¬ï¿½Ú¸Ãºï¿½ï¿½ï¿½waitï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½
     ret->statssz = statssz;
     
     ret->sorted = 0;
     
-    stats = malloc((statssz = INITIAL_STAT_SZ) * sizeof(unsigned long)); //¿ª±ÙÐÂµÄÊý×éÓÃÀ´Í³¼ÆÏÂÒ»´ÎÊ±¼äÖÜÆÚµÄÊ±¼ä²îÖµ
+    stats = malloc((statssz = INITIAL_STAT_SZ) * sizeof(unsigned long)); //ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í³ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½Ê±ï¿½ï¿½ï¿½Öµ
     if (!stats)
         abort();
     statscount = 0;

@@ -30,10 +30,8 @@ struct stats_results;
 int init_stats(void);
 int free_stats(void);
 
-int inbound(struct timeval tv, struct in_addr laddr, struct in_addr raddr,
-                uint16_t lport, uint16_t rport);
-int outbound(struct timeval tv, struct in_addr laddr, struct in_addr raddr,
-                uint16_t lport, uint16_t rport);
+int inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr raddr, uint16_t lport, uint16_t rport);
+int outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr raddr, char* l_ip, char* r_ip, uint16_t lport, uint16_t rport);
                 
 struct stats_results *get_flush_stats(void);
 int free_results(struct stats_results *);

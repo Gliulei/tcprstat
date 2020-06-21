@@ -36,6 +36,7 @@ struct session {
     struct timeval tv;
     
     struct session *next;
+    char data[0];
     
 };
 
@@ -57,7 +58,7 @@ static unsigned long hash_newsz(unsigned long sz);
 unsigned long initial_hash_sz = INITIAL_HASH_SZ;
 
 struct hash *
-hash_new(void) { //¼ÇÂ¼Ô´¶Ë¿Ú Ô´IP  Ä¿µÄ¶Ë¿Ú  Ä¿µÄIPµÄhash±í
+hash_new(void) { //ï¿½ï¿½Â¼Ô´ï¿½Ë¿ï¿½ Ô´IP  Ä¿ï¿½Ä¶Ë¿ï¿½  Ä¿ï¿½ï¿½IPï¿½ï¿½hashï¿½ï¿½
     struct hash *ret;
     
     ret = malloc(sizeof(struct hash));
@@ -114,7 +115,7 @@ hash_get(struct hash *hash,
 int
 hash_get_rem(struct hash *hash,
          uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
-         struct timeval *result)
+         struct timeval *result, char** key)
 {
     struct session *session, *next;
     unsigned long port;
@@ -129,6 +130,7 @@ hash_get_rem(struct hash *hash,
         )
         {
             *result = session->next->tv;
+            *key = session->next->data;
             
             // Now remove
             next = session->next->next;
@@ -149,12 +151,12 @@ hash_get_rem(struct hash *hash,
 int
 hash_set(struct hash *hash,
          uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
-         struct timeval value)
+         struct timeval value, char* key)
 {
     hash_load_check(hash);
     
     if (hash_set_internal(hash->sessions, hash->sz,
-                             laddr, raddr, lport, rport, value))
+                             laddr, raddr, lport, rport, value, key))
     {
         hash->count ++;
         return 1;
@@ -199,7 +201,7 @@ hash_clean(struct hash *hash, unsigned long min) {
 static int
 hash_set_internal(struct session *sessions, unsigned long sz,
          uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
-         struct timeval value)
+         struct timeval value, char* key)
 {
     struct session *session;
     unsigned long port;
@@ -230,6 +232,8 @@ hash_set_internal(struct session *sessions, unsigned long sz,
     session->next->lport = lport;
     
     session->next->tv = value;
+    memcpy(session->next->data, key, strlen(key));
+    //printf("====== %s\n", session->next->data);
     
     session->next->next = NULL;
     
@@ -262,7 +266,7 @@ hash_load_check(struct hash *hash) {
                 
                 hash_set_internal(new_sessions, nsz, session->laddr,
                         session->raddr, session->lport, session->rport,
-                        session->tv);
+                        session->tv, session->data);
                         
             }
             

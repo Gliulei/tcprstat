@@ -31,10 +31,10 @@ int hash_get(struct hash *hash,
          struct timeval *result);
 int hash_get_rem(struct hash *hash,
          uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
-         struct timeval *result);
+         struct timeval *result, char** data);
 int hash_set(struct hash *hash,
          uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
-         struct timeval value);
+         struct timeval value, char* data);
          
 int hash_clean(struct hash *hash, unsigned long min);
          
