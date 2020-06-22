@@ -266,7 +266,7 @@ hash_load_check(struct hash *hash) {
                 
                 hash_set_internal(new_sessions, nsz, session->laddr,
                         session->raddr, session->lport, session->rport,
-                        session->tv, session->data);
+                        session->tv, session->tv);
                         
             }
             
