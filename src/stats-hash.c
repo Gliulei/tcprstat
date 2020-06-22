@@ -129,7 +129,7 @@ hash_get_rem(struct hash *hash,
         )
         {
             *result = session->next->tv;
-            //*key = session->next->data;
+            *key = session->next->data;
             
             // Now remove
             next = session->next->next;
@@ -233,8 +233,7 @@ hash_set_internal(struct session *sessions, unsigned long sz,uint32_t laddr, uin
     session->next->lport = lport;
     
     session->next->tv = value;
-    char* test = "test";
-    memcpy(session->next->data, test, strlen(test));
+    memcpy(session->next->data, key, strlen(key));
     //printf("====== %s\n", session->next->data);
     
     session->next->next = NULL;
