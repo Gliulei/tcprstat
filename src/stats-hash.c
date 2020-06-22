@@ -36,7 +36,7 @@ struct session {
     struct timeval tv;
     
     struct session *next;
-    char data[0];
+    char data[];
     
 };
 
