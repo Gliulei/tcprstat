@@ -263,10 +263,8 @@ hash_load_check(struct hash *hash) {
             for (session = hash->sessions + i; session->next;
                     session = session->next)
             {
-                
-                hash_set_internal(new_sessions, nsz, session->laddr,
-                        session->raddr, session->lport, session->rport,
-                        session->tv, session->tv);
+                char* test = "test";
+                hash_set_internal(new_sessions, nsz, session->laddr, session->raddr, session->lport, session->rport, session->tv, test);
                         
             }
             
