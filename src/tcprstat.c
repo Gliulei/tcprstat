@@ -78,13 +78,6 @@ struct output_options output_options = {
 
 // Operation timestamp
 time_t timestamp;
-int test1() {
-    return 0;
-}
-
-int test2() {
-    return 0;
-}
 
 int
 main(int argc, char *argv[]) {
