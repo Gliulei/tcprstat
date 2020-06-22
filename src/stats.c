@@ -177,7 +177,6 @@ inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr radd
     trim_right(buf);
     
     hash_set(sessions, laddr.s_addr, raddr.s_addr, lport, rport, tv, buf);
-    test1();
     unlock_sessions();
     return 0;
 }

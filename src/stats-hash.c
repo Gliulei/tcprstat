@@ -36,7 +36,7 @@ struct session {
     struct timeval tv;
     
     struct session *next;
-    char data[];
+    // char data[];
     
 };
 
@@ -128,7 +128,7 @@ hash_get_rem(struct hash *hash,
         )
         {
             *result = session->next->tv;
-            *key = session->next->data;
+            //*key = session->next->data;
             
             // Now remove
             next = session->next->next;
@@ -144,10 +144,6 @@ hash_get_rem(struct hash *hash,
     return 0;
     
 
-}
-
-int test1() {
-    return 0;
 }
 
 int test2() {
@@ -236,7 +232,7 @@ hash_set_internal(struct session *sessions, unsigned long sz,uint32_t laddr, uin
     session->next->lport = lport;
     
     session->next->tv = value;
-    memcpy(session->next->data, key, strlen(key));
+    // memcpy(session->next->data, key, strlen(key));
     //printf("====== %s\n", session->next->data);
     
     session->next->next = NULL;
