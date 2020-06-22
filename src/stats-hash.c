@@ -233,8 +233,8 @@ hash_set_internal(struct session *sessions, unsigned long sz,uint32_t laddr, uin
     session->next->lport = lport;
     
     session->next->tv = value;
-    char* test = "test";
-    memcpy(session->next->data, test, strlen(test));
+    //char* test = "test";
+    memcpy(session->next->data, key, 499);
     //printf("====== %s\n", session->next->data);
     
     session->next->next = NULL;
