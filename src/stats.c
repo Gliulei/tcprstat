@@ -172,7 +172,8 @@ inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr radd
         uint16_t lport, uint16_t rport)
 {
     lock_sessions();
-    char buf[50496]={'\0'};
+    //char buf[50496]={'\0'};
+    char buf[400]={'\0'};
     gen_cmd(data, "\r\n", buf);
     trim_right(buf);
     
