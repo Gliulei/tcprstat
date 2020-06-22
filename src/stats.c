@@ -179,7 +179,6 @@ inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr radd
     hash_set(sessions, laddr.s_addr, raddr.s_addr, lport, rport, tv, buf);
     test1();
     unlock_sessions();
-    test2();
     return 0;
 }
 
@@ -223,12 +222,13 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
                 write(g_log_fd, buf, (size_t)n);
         }
         stats[statscount ++] = newstat; //
-        
         unlock_stats();
         
         return 0;
         
     }
+
+    test2();
             
     unlock_sessions();
     
