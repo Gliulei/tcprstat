@@ -41,6 +41,7 @@
 #include <stdio.h>
 
 #include "stats-hash.h"
+#include <ctype.h>
 
 struct hash *sessions;
 
@@ -214,7 +215,9 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
             
         }
 
-        zlog_info(g_log_fd, "cmd=%s, res_len=%ld, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, data, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
+        n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     cmd:%s\r\n", start.tv_sec, start.tv_usec, key);
+        write(g_log_fd, buf, (size_t)n);
+        //zlog_info(g_log_fd, "cmd=%s, res_len=%ld, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, data, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
         /*if(newstat > g_delay_time && g_log_fd > 0) {
             n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     delay_time:%ld\r\n", start.tv_sec, start.tv_usec, newstat);
             if(n > 0)

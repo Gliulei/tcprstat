@@ -49,9 +49,7 @@ struct hash {
 
 static unsigned long
     hash_fun(uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport);
-static int hash_set_internal(struct session *sessions, unsigned long sz,
-        uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
-        struct timeval tv);
+static int hash_set_internal(struct session *sessions, unsigned long sz,uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,struct timeval tv, char* data);
 static int hash_load_check(struct hash *hash);
 static unsigned long hash_newsz(unsigned long sz);
     
@@ -199,9 +197,7 @@ hash_clean(struct hash *hash, unsigned long min) {
 }
 
 static int
-hash_set_internal(struct session *sessions, unsigned long sz,
-         uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
-         struct timeval value, char* key)
+hash_set_internal(struct session *sessions, unsigned long sz,uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,struct timeval value, char* key)
 {
     struct session *session;
     unsigned long port;
