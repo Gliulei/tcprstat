@@ -183,12 +183,12 @@ inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr radd
     return 0;
     
 }
-void test1() {
-
+int test1() {
+    return 0;
 }
 
-void test2() {
-
+int test2() {
+    return 0;
 }
 
 //ʱ��ͳ�ƹؼ���������get_flush_stats  outbound
