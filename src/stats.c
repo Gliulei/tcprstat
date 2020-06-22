@@ -181,14 +181,6 @@ inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr radd
     unlock_sessions();
     test2();
     return 0;
-    
-}
-int test1() {
-    return 0;
-}
-
-int test2() {
-    return 0;
 }
 
 //ʱ��ͳ�ƹؼ���������get_flush_stats  outbound

@@ -65,7 +65,7 @@ int g_log_fd = -1;
 char *program_name;
 int port;
 int interval = 30;
-FILE *capture_file = NULL; //ÀëÏßÄ£Ê½-rÖ¸¶¨µÄofflinefileÎÄ¼þ
+FILE *capture_file = NULL; //ï¿½ï¿½ï¿½ï¿½Ä£Ê½-rÖ¸ï¿½ï¿½ï¿½ï¿½offlinefileï¿½Ä¼ï¿½
 struct output_options output_options = {
     DEFAULT_OUTPUT_FORMAT,
     DEFAULT_OUTPUT_INTERVAL,
@@ -78,6 +78,13 @@ struct output_options output_options = {
 
 // Operation timestamp
 time_t timestamp;
+int test1() {
+    return 0;
+}
+
+int test2() {
+    return 0;
+}
 
 int
 main(int argc, char *argv[]) {
@@ -101,7 +108,7 @@ main(int argc, char *argv[]) {
         case -1:
             break;
             
-        case 'r': ////ÀëÏßÄ£Ê½-rÖ¸¶¨µÄofflinefileÎÄ¼þ
+        case 'r': ////ï¿½ï¿½ï¿½ï¿½Ä£Ê½-rÖ¸ï¿½ï¿½ï¿½ï¿½offlinefileï¿½Ä¼ï¿½
             capture_file = fopen(optarg, "r"); 
             if (!capture_file) {
                 fprintf(stderr, "Cannot open file `%s': %s\n", optarg,
@@ -111,7 +118,7 @@ main(int argc, char *argv[]) {
             }
             break;
             
-        case 'l': //Ö¸¶¨IPµØÖ·
+        case 'l': //Ö¸ï¿½ï¿½IPï¿½ï¿½Ö·
             specified_addresses = 1;
             if (parse_addresses(optarg)) {
                 fprintf(stderr, "Error parsing local addresses\n");
@@ -121,7 +128,7 @@ main(int argc, char *argv[]) {
             
             break;
             
-        case 'p': //Ö¸¶¨¶Ë¿Ú
+        case 'p': //Ö¸ï¿½ï¿½ï¿½Ë¿ï¿½
             port = strtol(optarg, NULL, 0);
             if (port <= 0 || port > 65535) {
                 fprintf(stderr, "Invalid port\n");
@@ -130,7 +137,7 @@ main(int argc, char *argv[]) {
             
             break;
             
-        case 'f': //×Ô¶¨ÒåÊä³ö¸ñÊ½
+        case 'f': //ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½
             if (!check_format(optarg)) {
                 fprintf(stderr, "Bad format provided: `%s'\n", optarg);
                 return EXIT_FAILURE;
@@ -140,7 +147,7 @@ main(int argc, char *argv[]) {
             
             break;
             
-        case 't': //¶àÉÙÊ±¼äÍ³¼Æ´òÓ¡Ò»´Î
+        case 't': //ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Í³ï¿½Æ´ï¿½Ó¡Ò»ï¿½ï¿½
             output_options.interval = strtoul(optarg, NULL, 10);
             if (interval <= 0 || interval >= MAX_OUTPUT_INTERVAL) {
                 fprintf(stderr, "Bad interval provided\n");
@@ -149,7 +156,7 @@ main(int argc, char *argv[]) {
             
             break;
             
-        case 'T': //Í³¼ÆÑÓ³Ù³¬¹ýÕâÃ´¶àµÄ°üÊý
+        case 'T': //Í³ï¿½ï¿½ï¿½Ó³Ù³ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½Ä°ï¿½ï¿½ï¿½
             g_delay_time = strtoul(optarg, NULL, 10);
             if (g_delay_time <= 0 || g_delay_time >= 10000000) {
                 fprintf(stderr, "Bad interval provided\n");
@@ -160,7 +167,7 @@ main(int argc, char *argv[]) {
             
             break;
             
-        case 'n': //×î¶àÍ³¼Æ´òÓ¡¶àÉÙ´Î
+        case 'n': //ï¿½ï¿½ï¿½Í³ï¿½Æ´ï¿½Ó¡ï¿½ï¿½ï¿½Ù´ï¿½
             output_options.iterations = strtol(optarg, NULL, 10);
             if (interval < 0) {
                 fprintf(stderr, "Bad iterations provided\n");
@@ -177,10 +184,10 @@ main(int argc, char *argv[]) {
                            strerror(errno));
                 return -1;
             }
-                    /* Çå¿ÕÎÄ¼þ */
+                    /* ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ */
             ftruncate(g_log_fd,0);
 
-            /* ÖØÐÂÉèÖÃÎÄ¼þÆ«ÒÆÁ¿ */
+            /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ */
             lseek(g_log_fd,0,SEEK_SET);
             break;
             
