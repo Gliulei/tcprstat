@@ -177,11 +177,18 @@ inbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr radd
     trim_right(buf);
     
     hash_set(sessions, laddr.s_addr, raddr.s_addr, lport, rport, tv, buf);
-    
+    test1();
     unlock_sessions();
-    
+    test2();
     return 0;
     
+}
+void test1() {
+
+}
+
+void test2() {
+
 }
 
 //ʱ��ͳ�ƹؼ���������get_flush_stats  outbound
