@@ -36,7 +36,7 @@ struct session {
     struct timeval tv;
     
     struct session *next;
-    char data[];
+    char data[500];
     
 };
 
@@ -68,8 +68,8 @@ hash_new(void) { //��¼Դ�˿� ԴIP  Ŀ�Ķ˿�  Ŀ��IP��hash�
     
     // Don't change following ret->sz for initial_hash_sz. That wouldn't be
     // very thread_safe (not that the whole module is :)
-    //ret->sessions = malloc(ret->sz * sizeof(struct session));
-    ret->sessions = malloc(ret->sz * (sizeof(struct session) + 100*sizeof(char)));
+    ret->sessions = malloc(ret->sz * sizeof(struct session));
+    // ret->sessions = malloc(ret->sz * (sizeof(struct session) + 100*sizeof(char)));
     if (!ret->sessions)
         abort();
     memset(ret->sessions, 0, ret->sz * sizeof(struct session));
