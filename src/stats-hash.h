@@ -37,5 +37,7 @@ int hash_set(struct hash *hash,
          struct timeval value, char* data);
          
 int hash_clean(struct hash *hash, unsigned long min);
+int test1();
+int test2();
          
 #endif

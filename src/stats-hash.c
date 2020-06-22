@@ -146,6 +146,14 @@ hash_get_rem(struct hash *hash,
 
 }
 
+int test1() {
+    return 0;
+}
+
+int test2() {
+    return 0;
+}
+
 int
 hash_set(struct hash *hash,
          uint32_t laddr, uint32_t raddr, uint16_t lport, uint16_t rport,
