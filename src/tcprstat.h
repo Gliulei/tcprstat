@@ -24,12 +24,13 @@
 
 #include <time.h>
 #include <stdio.h>
+#include "zlog/zlog.h"
 
-//´òÓ¡¸ñÊ½£¬ Ä¬ÈÏÎª
+//ï¿½ï¿½Ó¡ï¿½ï¿½Ê½ï¿½ï¿½ Ä¬ï¿½ï¿½Îª
 /*DEFAULT_OUTPUT_FORMAT
 timestamp       count   max     min     avg     med     stddev  95_max  95_avg  95_std  99_max  99_avg  99_std
 1470125657      0       0       0       0       0       0       0       0       0       0       0       0
-*/ //¸³Öµ¸ø±äÁ¿output_options   ¸Ã×Ö·û´®×ª»»ÎªÊä³öÔÚoutput_header   Í³¼ÆÐÅÏ¢Êä³öÔÚoutput  //Ê±ÑÓÍ³¼Æ¹Ø¼üº¯Êý¼û¼ûget_flush_stats  outbound
+*/ //ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½output_options   ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½×ªï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½output_header   Í³ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½ï¿½ï¿½ï¿½ï¿½output  //Ê±ï¿½ï¿½Í³ï¿½Æ¹Ø¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½get_flush_stats  outbound
 #define DEFAULT_OUTPUT_FORMAT \
     "%T\\t%n\\t%M\\t%m\\t%a\\t%h\\t%S\\t%C\\t" \
     "%95M\\t%95a\\t%95S\\t%99M\\t%99a\\t%99S\\n"
