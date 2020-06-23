@@ -44,6 +44,7 @@ extern int port;
 extern char *program_name;
 extern time_t timestamp;
 extern int g_log_fd;
+extern int g_zlog_conn;
 extern FILE *capture_file;
 extern int g_delay_time;
 

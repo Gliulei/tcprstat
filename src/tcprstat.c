@@ -61,6 +61,7 @@ int specified_addresses = 0;
 pthread_t capture_thread_id, output_thread_id;
 int g_delay_time = 100;
 int g_log_fd = -1;
+zlog_category_t *g_zlog_conn;
 // Global options
 char *program_name;
 int port;
@@ -78,7 +79,6 @@ struct output_options output_options = {
 
 // Operation timestamp
 time_t timestamp;
-zlog_category_t *g_zlog_conn;
 
 
 int init_zlog(const char* filename)
