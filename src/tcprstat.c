@@ -78,12 +78,34 @@ struct output_options output_options = {
 
 // Operation timestamp
 time_t timestamp;
+zlog_category_t *g_zlog_conn;
+
+
+int init_zlog(const char* filename)
+{
+    int rc;
+	rc = zlog_init(filename);
+	if (rc) {
+		printf("init failed\n");
+		return 1;
+	}
+
+	g_zlog_conn = zlog_get_category("my_cat");
+	if (!g_zlog_conn) {
+		printf("get cat fail\n");
+		zlog_fini();
+		return 2;
+	}
+
+    return 0;
+}
 
 int
 main(int argc, char *argv[]) {
     struct sigaction sa;
     char c;
     int option_index = 0;
+    int res;
     
     // Program name
     program_name = strrchr(argv[0], '/');
@@ -171,17 +193,23 @@ main(int argc, char *argv[]) {
 
         case 'o':
             
-            g_log_fd = open(optarg, O_WRONLY | O_APPEND | O_CREAT, 0644);
-            if (g_log_fd < 0) {
-                printf("opening log file '%s' failed: %s", optarg,
-                           strerror(errno));
-                return -1;
-            }
-                    /* ����ļ� */
-            ftruncate(g_log_fd,0);
+            // g_log_fd = open(optarg, O_WRONLY | O_APPEND | O_CREAT, 0644);
+            // if (g_log_fd < 0) {
+            //     printf("opening log file '%s' failed: %s", optarg,
+            //                strerror(errno));
+            //     return -1;
+            // }
+            //         /* ����ļ� */
+            // ftruncate(g_log_fd,0);
 
-            /* ���������ļ�ƫ���� */
-            lseek(g_log_fd,0,SEEK_SET);
+            // /* ���������ļ�ƫ���� */
+            // lseek(g_log_fd,0,SEEK_SET);
+            res = init_zlog(optarg);
+            if (0 != res)
+            {
+                return EXIT_SUCCESS;
+            }
+            zlog_info(g_zlog_conn, "init zlog success!!");
             break;
             
         case 's':
