@@ -1,3 +1,6 @@
+# vscode
+.vscode/
+
 # Object files
 *.o
 *.ko
@@ -9,8 +12,8 @@
 *.pch
 
 # Libraries
-*.lib
-*.a
+#*.lib
+#*.a
 *.la
 *.lo
 
