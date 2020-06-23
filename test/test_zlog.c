@@ -13,7 +13,7 @@ int main(int argc, char** argv)
 	int rc;
 	zlog_category_t *c;
 
-	rc = zlog_init("./zlog.conf");
+	rc = zlog_init("/home/dev/tcprstat/test/zlog.conf");
 	if (rc) {
 		printf("init failed\n");
 		return -1;
@@ -27,6 +27,8 @@ int main(int argc, char** argv)
 	}
 
 	zlog_info(c, "hello, zlog");
+	zlog_info(c, "hello2, zlog");
+	zlog_info(c, "hello3, zlog");
 
 	zlog_fini();
 
