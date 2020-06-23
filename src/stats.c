@@ -212,7 +212,7 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
             
         }
         if(g_log_fd > 0) {
-            n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     cmd:%s\r\n", start.tv_sec, start.tv_usec, key);
+            n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     cmd:%s    res:%s\r\n", start.tv_sec, start.tv_usec, key, data);
             if(n > 0){
                 write(g_log_fd, buf, (size_t)n);
             }
