@@ -189,11 +189,13 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
 {
     struct timeval start;
     unsigned long newstat;
-    // char buf[1024];
+    char buf[1024] = {'\0'};
     // int n = 0;
     char* key = NULL;
     
     lock_sessions();
+    gen_cmd(data, "\r\n", buf);
+    trim_right(buf);
     
     if (hash_get_rem(sessions, laddr.s_addr, raddr.s_addr, lport, rport, &start, &key))
     {
@@ -212,7 +214,7 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
             
         }
         if(strlen(data) > 0) {
-            zlog_info(g_zlog_conn, "cmd=%s, res=%s, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, data, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
+            zlog_info(g_zlog_conn, "cmd=%s, res=%s, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, buf, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
             // n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     cmd:%s    res:%s\r\n", start.tv_sec, start.tv_usec, key, data);
             // if(n > 0){
                 // write(g_log_fd, buf, (size_t)n);
