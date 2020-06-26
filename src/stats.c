@@ -240,9 +240,10 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
             
         }
         if(strlen(data) > 0) {
-             char res[1024] = {'\0'};
-             gen_val(data, "\r\n", res);
-             trim_right(res);
+            char res[1024] = {'\0'};
+            memcpy(res, data, 499);
+            // gen_val(data, "\r\n", res);
+             //trim_right(res);
             zlog_info(g_zlog_conn, "cmd=%s, res=%s, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, res, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
             // n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     cmd:%s    res:%s\r\n", start.tv_sec, start.tv_usec, key, data);
             // if(n > 0){
