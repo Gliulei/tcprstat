@@ -189,8 +189,8 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
 {
     struct timeval start;
     unsigned long newstat;
-    //char res[1024] = {'\0'};
-    char* res = NULL;
+    char res[1024] = {'\0'};
+    //char* res = NULL;
     // int n = 0;
     char* key = NULL;
     
