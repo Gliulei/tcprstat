@@ -128,6 +128,34 @@ void gen_cmd(char *src, const char *separator, char *dest) {
     }  
 } 
 
+void gen_val(char *src, const char *separator, char *dest) {
+    char *pNext;
+    //int count = 0;
+    if (src == NULL || strlen(src) == 0)
+    {
+        return;
+    }
+
+    if (separator == NULL || strlen(separator) == 0)
+    {
+        return; 
+    }
+
+    pNext = strtok(src, separator);
+    while(pNext != NULL) 
+    {
+        if(NULL == strstr(pNext, "*") && NULL == strstr(pNext, "$"))
+        {
+            //*dest++ = pNext;
+           // ++count;
+           strcat(dest, pNext);
+           strcat(dest, " ");
+        }
+        pNext = strtok(NULL, separator);  
+        
+    }  
+} 
+
 int time2Str(time_t timep, char* str, size_t len)
 {
     struct tm *tmp_time = localtime(&timep);
@@ -213,9 +241,9 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
         }
         if(strlen(data) > 0) {
              char res[1024] = {'\0'};
-             gen_cmd(data, "\r\n", res);
+             gen_val(data, "\r\n", res);
              trim_right(res);
-            zlog_info(g_zlog_conn, "cmd=%s, res=%s, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, data, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
+            zlog_info(g_zlog_conn, "cmd=%s, res=%s, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, res, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
             // n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     cmd:%s    res:%s\r\n", start.tv_sec, start.tv_usec, key, data);
             // if(n > 0){
                 // write(g_log_fd, buf, (size_t)n);
