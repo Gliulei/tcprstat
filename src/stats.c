@@ -134,7 +134,7 @@ void gen_val(char *src, char *dest) {
     switch(src[0]) {
         case '$':
             buf_len = atoi(src + 1);
-            strncpy(dest, src+3, buf_len + 2);
+            strncpy(dest, src+5, buf_len);
         case '*':
             /* For null multi-bulk replies (like timeouts from brpoplpush): */
             if(memcmp(src + 1, "-1", 2) == 0) {
@@ -234,7 +234,7 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
             char res[1024] = {'\0'};
             gen_val(data, res);
             trim_right(res);
-            printf("res:%s", res);
+            //printf("res:%s", res);
             zlog_info(g_zlog_conn, "cmd=%s, res=%s, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, res, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
             // n = snprintf(buf, sizeof(buf), "timestamp:%ld.%ld     cmd:%s    res:%s\r\n", start.tv_sec, start.tv_usec, key, data);
             // if(n > 0){
