@@ -128,31 +128,22 @@ void gen_cmd(char *src, const char *separator, char *dest) {
     }  
 } 
 
-void gen_val(char *src, const char *separator, char *dest) {
-    char *pNext;
-    //int count = 0;
-    if (src == NULL || strlen(src) == 0)
-    {
-        return;
-    }
 
-    if (separator == NULL || strlen(separator) == 0)
-    {
-        return; 
-    }
+void gen_val(char *src, char *dest) {
+    int buf_len = 0;
+    switch(src[0]) {
+        case '$':
+            buf_len = atoi(src + 1);
+            strncpy(dest, src+3, buf_len + 2);
+        case '*':
+            /* For null multi-bulk replies (like timeouts from brpoplpush): */
+            if(memcmp(src + 1, "-1", 2) == 0) {
+                dest = src;
+            }
+            /* fall through */
 
-    pNext = strtok(src, separator);
-    while(pNext != NULL) 
-    {
-        if(NULL == strstr(pNext, "*") && NULL == strstr(pNext, "$"))
-        {
-            //*dest++ = pNext;
-           // ++count;
-           strcat(dest, pNext);
-           strcat(dest, " ");
-        }
-        pNext = strtok(NULL, separator);  
-        
+        default:
+            dest = src;
     }  
 } 
 
@@ -243,7 +234,7 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
             printf("data:%s\n", data);
             char res[1024] = {'\0'};
             //memcpy(res, data, 499);
-            gen_val(data, "\r\n", res);
+            gen_val(data, res);
              //trim_right(res);
              printf("res:%s", res);
             //zlog_info(g_zlog_conn, "cmd=%s, res=%s, from=%s:%d, to=%s:%d, start_timestamp:%ld.%ld, end_timestamp:%ld.%ld, delay_time:%ld", key, res, l_ip, lport, r_ip, rport, start.tv_sec, start.tv_usec, tv.tv_sec, tv.tv_usec, newstat);
