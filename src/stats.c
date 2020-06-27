@@ -240,6 +240,7 @@ outbound(struct timeval tv, char* data, struct in_addr laddr, struct in_addr rad
             
         }
         if(strlen(data) > 0) {
+            printf("data:%s\n", data);
             char res[1024] = {'\0'};
             //memcpy(res, data, 499);
             gen_val(data, "\r\n", res);
